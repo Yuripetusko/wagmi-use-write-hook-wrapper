@@ -79,6 +79,7 @@ export const useWriteHookWithReceiptCallbacks = <
 
   const onReverted = async (receipt: TransactionReceipt) => {
     if (receipt?.status === 'reverted') {
+      // If writeContract didn't throw, but receipt has reverted, sometimes it is due to a race condition (a contract that calls other contracts), so we try to simulate the call again, and if it doesn't fail, we can assume that the transaction has succeeded
       try {
         const { functionName, abi, chainId, args, address } =
           wagmiHookParameters;
